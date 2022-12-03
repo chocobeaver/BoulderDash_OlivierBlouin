@@ -15,6 +15,7 @@ using SFML.Audio;
 
 namespace Boulderdash
 {
+    
     class Program
     {
 
@@ -43,7 +44,7 @@ namespace Boulderdash
             /// <param name="x">Position initiale en x</param>
             /// <param name="y">Position initiale en y</param>
             /// <param name="dir">Direction intiale</param>
-            public Personnage(string fichierImage, int x, int y, Direction dir)
+            public Personnage(string fichierImage, int x, int y, Direction dir=Direction.Gauche)
             {
                 X = x;
                 Y = y;
@@ -106,18 +107,23 @@ namespace Boulderdash
             return carte;
         }
         #endregion
-        static void ShowMap(object[,] carte)
+       static void TestMap(Objet[,] carte)
         {
-            /*if (carte[i, j] == Objet.M)
+            for (int i = 0; i < NbLignes; i++)
             {
-                PositionMur.X = j; PositionMur.Y = i;
-                WallSprite.Position = (Vector2f)PositionMur * NbPixelsParCase;
-                Screen.Draw(WallSprite);
-            }*/
+                for (int j = 0; j < NbColonnes; j++)
+                {
+                    Console.Write(carte[i, j]);
+                }
+                Console.WriteLine();
+            }
         }
 
         static void Main(string[] args)
         {
+            //creation du personage
+            Personnage RockFord = new Personnage("images/heros24.bmp", 4,4);
+            //creating the grid
             Objet[,] carte = ChargerCarteJeu("Boulderdash.csv"); // On charge la carte (fonction déjà écrite, cette ligne ne devrait pas changer)
 
             // **************************************************************************
@@ -149,12 +155,12 @@ namespace Boulderdash
             Texture MothTexture = new Texture("images/mur24.bmp");
             Sprite MothSprite = new Sprite(MothTexture);
             Vector2i PositionMoth = new Vector2i(0, 0);
-
-
+            
 
             //loop to show screen
             while (!Keyboard.IsKeyPressed(Keyboard.Key.Escape))
             {
+               
                 //display the new screen 
                 Screen.DispatchEvents();
                 //clear the old sprite to make new one
@@ -164,7 +170,7 @@ namespace Boulderdash
                 {
                     for (int j = 0; j < carte.GetLength(1); j++)
                     {
-
+                        //function maybe
                         if (carte[i, j] == Objet.M)
                         {
                             PositionMur.X = j; PositionMur.Y = i;
@@ -172,8 +178,55 @@ namespace Boulderdash
                             Screen.Draw(WallSprite);
                         }
 
+                        if (carte[i, j] == Objet.T)
+                        {
+                            PositionGround.X = j; PositionGround.Y = i;
+                            GroundSprite.Position = (Vector2f)PositionGround * NbPixelsParCase;
+                            Screen.Draw(GroundSprite);
+                        }
+
+                        if (carte[i, j] == Objet.R)
+                        {
+                            PositionRock.X = j; PositionRock.Y = i;
+                            RockSprite.Position = (Vector2f)PositionRock * NbPixelsParCase;
+                            Screen.Draw(RockSprite);
+                        }
+
+                        if (carte[i, j] == Objet.D)
+                        {
+                            PositionDiamond.X = j; PositionDiamond.Y = i;
+                            DiamondSprite.Position = (Vector2f)PositionDiamond * NbPixelsParCase;
+                            Screen.Draw(DiamondSprite);
+                        }
+
+
+
                     }
                 }
+                //Maybe function
+                if (Keyboard.IsKeyPressed(Keyboard.Key.W))
+                {
+                    
+                    if(carte[RockFord.Y+1, RockFord.X] == Objet.V) { RockFord.Y--; }
+                    else if(carte[RockFord.Y + 1, RockFord.X] == Objet.T) { RockFord.Y--; carte[RockFord.Y, RockFord.X] = Objet.V; }
+                }
+                if (Keyboard.IsKeyPressed(Keyboard.Key.S))
+                {
+                    if (carte[RockFord.Y-1, RockFord.X] == Objet.V) { RockFord.Y++; }
+                    else if (carte[RockFord.Y - 1, RockFord.X] == Objet.T) { RockFord.Y++; carte[RockFord.Y, RockFord.X] = Objet.V; }
+                }
+                if (Keyboard.IsKeyPressed(Keyboard.Key.A))
+                {
+                    if (carte[RockFord.Y, RockFord.X-1] == Objet.V) { RockFord.X--; }
+                    if (carte[RockFord.Y, RockFord.X - 1] == Objet.T) { RockFord.X--; carte[RockFord.Y, RockFord.X] = Objet.V;}
+                }
+                if (Keyboard.IsKeyPressed(Keyboard.Key.D))
+                {
+                    if (carte[RockFord.Y, RockFord.X+1] == Objet.V) { RockFord.X++; }
+                    if (carte[RockFord.Y, RockFord.X + 1] == Objet.T) { RockFord.X++; carte[RockFord.Y, RockFord.X] = Objet.V; }
+                }
+                //RockFord
+                RockFord.Afficher(Screen,NbPixelsParCase);
                 Screen.Display();
                 Thread.Sleep(100);
 
