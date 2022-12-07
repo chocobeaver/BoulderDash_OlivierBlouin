@@ -16,6 +16,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+//using Map;
 
 namespace Boulderdash
 {
@@ -27,6 +28,7 @@ namespace Boulderdash
         const int NbLignes = 22;            // Nombre de lignes
         const int NbPixelsParCase = 24;     // Nombre de pixels d'une case
         const int MothSpeed = 20;           //le nombre de fois que le papillon prend de tour de boucle pour se deplacer
+        const int MoleSpeed = 20;           //le nombre de fois que la taupe prend de tour de boucle pour se deplacer
         int tour = 0;                       //le tour a lequel on est rendu pour introduire un futur timer
 
 
@@ -35,8 +37,9 @@ namespace Boulderdash
         // {Vide, Mur, Terre, Rocher, RocherTombant, Diamant}
         enum Objet { V, M, T, R, RT, D };
 
-        // Représente les directions de déplacement de l'ennemi ==> **maybe other
-        enum Direction { Gauche, Haut, Droite, Bas };
+
+        // Représente les directions de déplacement de l'ennemi 
+        enum Direction { Gauche, Haut, Droite, Bas, Null };
 
         class Cave
         {
@@ -72,44 +75,108 @@ namespace Boulderdash
               
             }
 
-            private void Deplacement(Objet[,] carte, int tour)
+            
+            private void DeplacementMole(Objet[,] carte, int tour,Random Rand)
+            {
+                MoveR(tour, Rand);
+                if (tour % MoleSpeed == 0)
+                {
+                    if (D == Direction.Haut)
+                    {
+                        if (carte[Y - 1, X] == Objet.V) { Y--; }
+                    }
+                    if (D == Direction.Bas)
+                    {
+                        if (carte[Y + 1, X] == Objet.V) { Y++; }
+                    }
+                    if (D == Direction.Droite)
+                    {
+                        if (carte[Y, X+1] == Objet.V) { X++; }
+                    }
+                    if (D == Direction.Gauche)
+                    {
+                        if (carte[Y, X-1] == Objet.V) { X--; }
+                    }
+                }
+            }
+            private void MoveR(int tour, Random Rand)
+            {
+                
+                
+                    int choice = Rand.Next(1,5);
+                    if (choice==1)
+                    {
+                        D = Direction.Haut;
+                    }
+                    else if (choice == 2)
+                    {
+                        D = Direction.Droite;
+                    }
+                    else if (choice == 3)
+                    {
+                        D = Direction.Bas;
+                    }
+                    else if (choice == 4)
+                    {
+                        D = Direction.Gauche;
+                    }
+                    else if (choice == 5)
+                    {
+                        D = Direction.Null;
+                    }
+                
+
+            }
+            private void DeplacementMoth(Objet[,] carte, int tour)
             {
                 
 
                 if (tour%MothSpeed==0)
                 {
-                    Console.WriteLine(D);
+                   
                     if (D == Direction.Haut)
                     {
-                        if (carte[Y - 1, X] == Objet.V) { Y--; }
-                        else if (carte[Y, X + 1] == Objet.V) { X++; }
-                        else if (carte[Y + 1, X] == Objet.V) { Y++; D = Direction.Droite; }
+                        if (carte[Y, X - 1] == Objet.V) { X--; D=Direction.Gauche; }
+                        else if (carte[Y-1,X]==Objet.V) { Y--; }
+                        else if (carte[Y, X+1] == Objet.V) { X++;D = Direction.Droite; }
+                        else { Y++; D = Direction.Bas; }
                     }
                     else if (D == Direction.Droite)
                     {
-                        if (carte[Y, X + 1] == Objet.V) { X++; }
-                        else if (carte[Y + 1, X] == Objet.V) { Y++; }
-                        else if (carte[Y, X - 1] == Objet.V) { X--; D = Direction.Bas; }
+                        if (carte[Y-1, X] == Objet.V) { Y--; D = Direction.Haut; }
+                        else if (carte[Y, X+1] == Objet.V) { X++; }
+                        else if (carte[Y+1, X] == Objet.V) { Y++; D = Direction.Bas; }
+                        else { X--; D = Direction.Gauche; }
                     }
                     else if (D == Direction.Bas)
                     {
-                        if (carte[Y + 1, X] == Objet.V) { Y++; }
-                        else if (carte[Y, X - 1] == Objet.V) { X--; }
-                        else if (carte[Y - 1, X] == Objet.V) { Y--; D = Direction.Gauche; }
+                        if (carte[Y, X+1] == Objet.V) { X++; D = Direction.Droite; }
+                        else if (carte[Y+1, X] == Objet.V) { Y++; }
+                        else if (carte[Y, X-1] == Objet.V) { X--; D = Direction.Gauche; }
+                        else { Y--; D = Direction.Haut; }
                     }
                     else if (D == Direction.Gauche)
                     {
-                        if (carte[Y, X - 1] == Objet.V) { X--; }
-                        else if (carte[Y - 1, X] == Objet.V) { Y--; }
-                        else if (carte[Y, X + 1] == Objet.V) { X--; D = Direction.Haut; }
+                        if (carte[Y +1, X] == Objet.V) { Y++; D = Direction.Bas; }
+                        else if (carte[Y, X - 1] == Objet.V) { X--; }
+                        else if (carte[Y - 1, X] == Objet.V) { Y--; D = Direction.Haut; }
+                        else { X++; D = Direction.Droite; }
                     }
                     
                 }
                 
             }
-            public void Afficher(RenderWindow Screen, float nbPixelsParCase, Objet[,] carte,int tour)
+            public void AfficherMoth(RenderWindow Screen, float nbPixelsParCase, Objet[,] carte,int tour)
             {
-                Deplacement(carte, tour);
+                DeplacementMoth(carte, tour);
+                Vector2f position = new Vector2f(X * nbPixelsParCase, Y * nbPixelsParCase);
+                S.Position = position;
+                Screen.Draw(S);
+            }
+
+            public void AfficherMole(RenderWindow Screen, float nbPixelsParCase, Objet[,] carte, int tour, Random Rand)
+            {
+                DeplacementMole(carte, tour, Rand);
                 Vector2f position = new Vector2f(X * nbPixelsParCase, Y * nbPixelsParCase);
                 S.Position = position;
                 Screen.Draw(S);
@@ -122,18 +189,10 @@ namespace Boulderdash
             public int Y { get; set; }
             public Texture T { get; set; }
         }
-        /// <summary>
-        /// La classe Personnage sert à créer Boulderdash et son ennemi ==> ** may change
-        /// </summary>
+     
         class Personnage
         {
-            /// <summary>
-            /// Constructeur du personnage 
-            /// </summary>
-            /// <param name="fichierImage">Nom du fichier image</param>
-            /// <param name="x">Position initiale en x</param>
-            /// <param name="y">Position initiale en y</param>
-            /// <param name="dir">Direction intiale</param>
+            
             public Personnage(string fichierImage, int x, int y)
             {
                 X = x;
@@ -144,13 +203,7 @@ namespace Boulderdash
                 int monney = 0;
             }
 
-            /// <summary>
-            /// Utilisez la méthode Afficher du personnage pour afficher le personnage
-            /// dans une fenêtre
-            /// </summary>
-            /// <param name="Screen">Objet représentant la fenêtre</param>
-            /// <param name="nbPixelsParCase">Facteur multiplicatif permettant de passer de la position
-            /// dans le tableau 2D à la position dans l'image</param>
+            
             public void Afficher(RenderWindow Screen, float nbPixelsParCase)
             {
                 Vector2f position = new Vector2f(X * nbPixelsParCase, Y * nbPixelsParCase);
@@ -158,17 +211,11 @@ namespace Boulderdash
                 Screen.Draw(Sprite);
             }
             public int Monney { get; set; }
-            /// <value>
-            /// Utilisez la propriété X afin de modifier la position horizontale
-            /// </value>     
+                
             public int X { get; set; }
-            /// <value>
-            /// Utilisez la propriété Y afin de modifier la position verticale
-            /// </value>     
+               
             public int Y { get; set; }
-            /// <value>
-            /// Utilisez la propriété Direction afin de conserver la direction du personnage
-            /// </value>   
+             
             public void Deplacement(Objet[,] carte, Keyboard.Key touch, Personnage RockFord)
             {
                 if (touch == (Keyboard.Key.S))
@@ -322,12 +369,15 @@ namespace Boulderdash
         
         static void Main(string[] args)
         {
+            Random Rand = new Random();
             int tour=0;
             bool end = true;
             //creation du personage
             Personnage RockFord = new Personnage("images/heros24.bmp", 3,2);
-            //creation du personage
+            //creation enemy moth
             enemy Moth = new enemy("images/papillon24.bmp", 2, 15, Direction.Gauche);
+            //creation enemy mole
+            // enemy Mole = new enemy("images/xxxx.bmp", 2, 15, Direction.Gauche);
             //creating the grid
             Objet[,] carte = ChargerCarteJeu("Boulderdash.csv"); // On charge la carte (fonction déjà écrite, cette ligne ne devrait pas changer)
 
@@ -355,7 +405,7 @@ namespace Boulderdash
             Texture lostTexture = new Texture("images/perdu24.bmp");
             Sprite lostSprite = new Sprite(lostTexture);
             lostSprite.Position=new Vector2f(14*NbPixelsParCase, 9*NbPixelsParCase);
-
+            
 
             //loop to show screen
             while (!Keyboard.IsKeyPressed(Keyboard.Key.Escape))
@@ -389,13 +439,16 @@ namespace Boulderdash
                 }
                 if (!end) { Screen.Draw(lostSprite); }
                 //moth
-                Moth.Afficher(Screen, NbPixelsParCase,carte,tour);
+                if (end) { Moth.AfficherMoth(Screen, NbPixelsParCase, carte, tour); }
+                //mole
+                //if (end) { Mole.AfficherMole(Screen, NbPixelsParCase, carte, tour, Rand); }
                 //RockFord
                 if (end) { RockFord.Afficher(Screen, NbPixelsParCase); }
                 //show on screen
                 tour++;
                 Screen.Display();
-                Console.WriteLine(RockFord.Monney);
+
+                //Console.WriteLine(RockFord.Monney);
                 Thread.Sleep(100);
 
             }
