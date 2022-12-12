@@ -6,47 +6,80 @@
 
 
 
-
+//library
+#region
 using Map;
 using SFML.Graphics;
 using SFML.System;
 using System.ComponentModel;
+#endregion
 
 namespace Display
 {
-    
-    class Cave:Displayable
+    //class cave heriting from  displayable that dictate what is showable
+    #region
+    class Cave :Displayable
     {
-        
+        // variable
+        #region
+        public Objet tile { get; private set; }
+        #endregion
+
+        //constructer
+        #region
+        //this constructer seem empty but has all the value from displayable that are already over therre
         public Cave(Objet tile,RenderWindow Screen,Coord XY):base(DisplayCase.GetSprite(tile),Screen,XY)//cave herit from displayable
             //and create sprite from texture got
         { 
             this.tile = tile;
-        }  
-        public Objet tile { get; private set; }
+        }
+        #endregion
+
+        //function
+        #region
+        //set a tile to smothing we give it in parameter
         public void SetTile(Objet tile)
         {
             this.tile = tile;
             S = DisplayCase.GetSprite(tile);
         }
-        
+        #endregion
+
     }
+    #endregion
+
+    //class displayable
+    #region
     public abstract class Displayable
     {
+        //variable
+        #region
         public const int NbPixelsParCase = 24;     // Nombre de pixels d'une case
-        protected Sprite S;
-        private RenderWindow Screen;
-        public Coord XY;
+        protected Sprite S;                        //object sprite as s taking the texture and giving it a position
+        private RenderWindow Screen;               //a screen to display on
+        public Coord XY;                           // a position 
+        #endregion
+
+        //construster
+        #region
         public Displayable(Sprite S, RenderWindow Screen,  Coord XY)
         {
             this.S = S;
             this.XY = XY;
             this.Screen = Screen;
         }
+        #endregion
+
+        //second constructer
+        #region
+        //make a displayable from img file and using  the other constructer to built it
         public Displayable(string fichierImg, RenderWindow Screen,Coord XY): this(new Sprite(new Texture(fichierImg)), Screen,XY)
         { }
+        #endregion
 
-
+        //function
+        #region
+        //show the instance of it on the screen at the position it has
         virtual public void Afficher()//virtual make it possible to overide
         {
             
@@ -54,10 +87,17 @@ namespace Display
             S.Position = position;
             Screen.Draw(S);
         }
-        
+        #endregion
+
     }
+    #endregion
+
+    //classs displaycase
+    #region
     class DisplayCase
     {
+        //variable that are the sprite of what a tile can be
+        #region
         //initialise wall    
         static private Sprite Wall = new Sprite(new Texture("images/mur24.bmp"));
 
@@ -69,9 +109,15 @@ namespace Display
 
         //initialise diamond
         static private Sprite Diamond = new Sprite(new Texture("images/diamant24.bmp"));
-        
+        #endregion
 
-        
+        //constructer
+        #region
+        //none
+        #endregion
+
+        //function
+        #region
         public static Sprite GetSprite(Objet RN)
         {
             if (RN == Objet.D) { return Diamond; }
@@ -80,11 +126,8 @@ namespace Display
             if (RN == Objet.M) { return Wall; }
             if (RN == Objet.RT) { return Rock; }
             return new Sprite();
-
-
         }
+        #endregion
     }
-
-   
-
+    #endregion
 }
