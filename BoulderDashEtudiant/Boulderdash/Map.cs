@@ -23,7 +23,7 @@ namespace Map
 
     // represent what each tile can be        
     // {empty, wall, ground, Rock, falling rock, Diamond}
-    enum Objet { V, M, T, R, RT, D };
+    enum Objet { V, M, T, R, RT, D};
     #endregion
 
     //class map

@@ -70,6 +70,7 @@ namespace Boulderdash
         #endregion
 
         //the main
+        #region
         static void Main(string[] args)
         {
 
@@ -90,7 +91,14 @@ namespace Boulderdash
             //initialise map
             #region
             //creating an instance of a Map naming it  map giving it a the function that load a map from a csv file, a Screen and the character that we created
-            Map.Map map = new Map.Map(ChargerCarteJeu("Boulderdash.csv"), Screen, RockFord);
+            Map.Map map = new Map.Map(ChargerCarteJeu(".CSV/Boulderdash.csv"), Screen, RockFord);
+            //creating an instance of a Map naming it ItemRoom giving it a the function that load a map from a csv file, a Screen and the character that we created
+            Map.Map ItemRoom = new Map.Map(ChargerCarteJeu(".CSV/ItemRoom.csv"), Screen, RockFord);
+            //check on which lvl to chow coresponding map
+            int lvl = 0;
+            //making an array of map to make progressive lvl
+            Map.Map[] MapArray = {ItemRoom,map};
+
             #endregion
 
             //initialize enemy
@@ -114,6 +122,8 @@ namespace Boulderdash
             WinSprite.Position = new Vector2f(15 * Displayable.NbPixelsParCase, 9 * Displayable.NbPixelsParCase);
             #endregion
 
+           
+            
 
             //loop to show screen
             #region
@@ -126,13 +136,15 @@ namespace Boulderdash
                 //clear the old sprite to make new one
                 Screen.Clear();
 
-                //this call the map to make visible every objet in map and as it show do the action of the tile if it aucur
-                map.Afficher(); 
-
+                //map section
+                #region
+                MapArray[lvl].Afficher();
                 
+                #endregion
+
 
                 //check if the gane as ended and if false check the movement of the character
-                if (map.GameContinue) { RockFord.Deplacement(map); }
+                if (map.GameContinue) { RockFord.Deplacement(MapArray[lvl]); }
                 
                 //check if the game as ended and if true show the sprite of the lot
                 if (!map.GameContinue) { Screen.Draw(lostSprite); }
@@ -158,6 +170,7 @@ namespace Boulderdash
             }
             #endregion
         }
+        #endregion
 
     }
 }
