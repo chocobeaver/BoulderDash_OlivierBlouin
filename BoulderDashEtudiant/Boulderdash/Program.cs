@@ -21,17 +21,20 @@ using System.Text.RegularExpressions;
 using Map;
 using Display;
 using Enemy;
+using Hero;
+using Item;
 #endregion
 
 namespace Boulderdash
 {
-    
+
     class Program
     {
         //const
         #region
         const int NbColonnes = 40;          // number of row
         const int NbLignes = 22;            // number of line
+        
         #endregion
 
         //load map
@@ -94,8 +97,7 @@ namespace Boulderdash
             Map.Map map = new Map.Map(ChargerCarteJeu(".CSV/Boulderdash.csv"), Screen, RockFord);
             //creating an instance of a Map naming it ItemRoom giving it a the function that load a map from a csv file, a Screen and the character that we created
             Map.Map ItemRoom = new Map.Map(ChargerCarteJeu(".CSV/ItemRoom.csv"), Screen, RockFord);
-            //check on which lvl to chow coresponding map
-            int lvl = 0;
+            
             //making an array of map to make progressive lvl
             Map.Map[] MapArray = {ItemRoom,map};
 
@@ -138,13 +140,13 @@ namespace Boulderdash
 
                 //map section
                 #region
-                MapArray[lvl].Afficher();
+                MapArray[Displayable.lvl].Afficher();
                 
                 #endregion
 
 
                 //check if the gane as ended and if false check the movement of the character
-                if (map.GameContinue) { RockFord.Deplacement(MapArray[lvl]); }
+                if (map.GameContinue) { RockFord.Deplacement(MapArray[Displayable.lvl]); }
                 
                 //check if the game as ended and if true show the sprite of the lot
                 if (!map.GameContinue) { Screen.Draw(lostSprite); }

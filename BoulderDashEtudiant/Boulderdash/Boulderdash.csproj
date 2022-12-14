@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Item.cs" />
     <Compile Include="Hero.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Display.cs" />

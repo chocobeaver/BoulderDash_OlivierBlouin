@@ -9,6 +9,7 @@
 //library
 #region
 using Display;
+using Item;
 using SFML.Graphics;
 using System;
 using System.ComponentModel;
@@ -20,10 +21,11 @@ namespace Map
     #region
     // Represent direction ennemi can make
     public enum Direction { Gauche, Haut, Droite, Bas, Null };
-
+    //check on which lvl to chow coresponding map
+    
     // represent what each tile can be        
     // {empty, wall, ground, Rock, falling rock, Diamond}
-    enum Objet { V, M, T, R, RT, D};
+    enum Objet { V, M, T, R, RT, D, P,DoN,DoB};
     #endregion
 
     //class map
@@ -33,14 +35,17 @@ namespace Map
     /// </summary>
     class Map :Displayable 
     {
+        
         //creating variable a map has
         #region
+        private Random R = new Random();
         //a double array
         private Cave[,] _Map;
         //a character
         public Hero.Personnage RockFord { get; set; }
         //a check if the game still on
         public bool GameContinue=true;
+
         #endregion
         //constructer
         #region
@@ -70,12 +75,12 @@ namespace Map
         public Objet GetObjet(Coord XY)
         {
 
-            return _Map[XY.Y,XY.X].tile;
+            return GetCave(XY).tile;
         }
         //set objet in a specific tile
         public void SetObjet(Coord XY, Objet obj)
         {
-            _Map[XY.Y,XY.X].SetTile(obj);    
+            GetCave(XY).SetTile(obj);    
         }
         //get the width of the double array
         public int GetWidth()
@@ -91,6 +96,15 @@ namespace Map
         public bool IsEmpty(Coord XY)
         {
             return GetObjet(XY) == Objet.V;
+        }
+
+        public void ApplyPlayerEffect()
+        {
+            GetCave(RockFord.XY).ApplyEffect(this);
+        }
+        private Cave GetCave(Coord XY)
+        {
+            return _Map[XY.Y, XY.X];
         }
         //show the map and make the action of each tile
         public override void Afficher()
@@ -109,7 +123,9 @@ namespace Map
                     //taking the obj that the position is rn and making a copy
                     Objet RN = GetObjet(XY);
 
-
+                
+                    //for when theres item
+                    if (RN == Objet.P) { new Pedestal(Items.M, XY, this.Screen).Afficher(); ApplyPlayerEffect(); }
                     //section rock calling the move rock function
                     if (RN == Objet.R)
                     {
@@ -142,7 +158,8 @@ namespace Map
 
                     }
                     //call the function to show the map
-                    _Map[XY.Y,XY.X].Afficher();
+                    GetCave(XY).Afficher();
+                    
 
                 }
             }

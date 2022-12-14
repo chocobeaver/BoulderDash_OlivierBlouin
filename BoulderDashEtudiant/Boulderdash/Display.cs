@@ -8,6 +8,7 @@
 
 //library
 #region
+using Item;
 using Map;
 using SFML.Graphics;
 using SFML.System;
@@ -43,6 +44,11 @@ namespace Display
             this.tile = tile;
             S = DisplayCase.GetSprite(tile);
         }
+
+        public virtual void ApplyEffect(Map.Map map)
+        {
+           
+        }
         #endregion
 
     }
@@ -54,9 +60,10 @@ namespace Display
     {
         //variable
         #region
+        public static int lvl { get; set; } = 0;   //the map we are on
         public const int NbPixelsParCase = 24;     // Nombre de pixels d'une case
         protected Sprite S;                        //object sprite as s taking the texture and giving it a position
-        private RenderWindow Screen;               //a screen to display on
+        public RenderWindow Screen { get; set; }   //a screen to display on
         public Coord XY;                           // a position 
         #endregion
 
@@ -67,6 +74,7 @@ namespace Display
             this.S = S;
             this.XY = XY;
             this.Screen = Screen;
+            
         }
         #endregion
 
@@ -109,6 +117,11 @@ namespace Display
 
         //initialise diamond
         static private Sprite Diamond = new Sprite(new Texture("images/diamant24.bmp"));
+        //initialise diamond
+        static private Sprite Door = new Sprite(new Texture("images/diamant24.bmp"));
+
+        //initialise pedestal
+        //get from item
         #endregion
 
         //constructer
@@ -125,6 +138,7 @@ namespace Display
             if (RN == Objet.R) { return Rock; }
             if (RN == Objet.M) { return Wall; }
             if (RN == Objet.RT) { return Rock; }
+            if (RN == Objet.DoN||RN==Objet.DoB) { return Door; }
             return new Sprite();
         }
         #endregion

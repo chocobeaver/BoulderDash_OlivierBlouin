@@ -137,8 +137,8 @@ namespace Enemy
                 dir.RotatedRight();//then check were he is facing and after on his right... till finding a posible move 
                 
             }
-            
-
+            XY.Add(new Coord(Direction.Gauche));
+            D = (Direction.Haut);
 
         }
         //the way the moth kill the hero
