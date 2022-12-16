@@ -34,7 +34,7 @@ namespace Boulderdash
         #region
         const int NbColonnes = 40;          // number of row
         const int NbLignes = 22;            // number of line
-        
+        public const int PriceToWin = 19;    //number of diamond to win total 19 diamond in map1
         #endregion
 
         //load map
@@ -77,7 +77,7 @@ namespace Boulderdash
         static void Main(string[] args)
         {
 
-
+            
             //initialise screen
             #region
             //this make the screen that we will display the game
@@ -146,10 +146,10 @@ namespace Boulderdash
 
 
                 //check if the gane as ended and if false check the movement of the character
-                if (map.GameContinue) { RockFord.Deplacement(MapArray[Displayable.lvl]); }
+                if (map.GameContinue|| RockFord.Monney == PriceToWin) { RockFord.Deplacement(MapArray[Displayable.lvl]); }
                 
                 //check if the game as ended and if true show the sprite of the lot
-                if (!map.GameContinue) { Screen.Draw(lostSprite); }
+                if (!map.GameContinue&&RockFord.Monney!=PriceToWin) { Screen.Draw(lostSprite); }
 
                 //check if the game as ended if false show the moth and as it show make his action
                 if (map.GameContinue) { Moth.Afficher(); }
@@ -159,6 +159,7 @@ namespace Boulderdash
 
                 //check if the game as ended if false show the character and as it show make his action
                 if (map.GameContinue) { RockFord.Afficher(); }
+                if (RockFord.Monney == PriceToWin) { map.GameContinue = false; Screen.Draw(WinSprite); }
 
 
                 

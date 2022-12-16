@@ -63,6 +63,7 @@ namespace Map
             {
                 for (int j = 0; j < Map.GetLength(1); j++)
                 {
+                    if(Map[i,j] == Objet.P) { _Map[i, j] = new Pedestal(Items.M, new Coord(j, i), Screen); continue; }
                     _Map[i, j] =new Cave(Map[i, j],Screen,new Coord(j,i));
                 }
             }           
@@ -124,8 +125,7 @@ namespace Map
                     Objet RN = GetObjet(XY);
 
                 
-                    //for when theres item
-                    if (RN == Objet.P) { new Pedestal(Items.M, XY, this.Screen).Afficher(); ApplyPlayerEffect(); }
+                    
                     //section rock calling the move rock function
                     if (RN == Objet.R)
                     {

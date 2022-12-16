@@ -76,7 +76,7 @@ namespace Hero
                     else
                     {
                         lvl++;
-                        XY = new Coord(0, 0);
+                        XY = new Coord(1, 1);
                     }
                 }
                 if (RN == Objet.DoB)
@@ -85,7 +85,7 @@ namespace Hero
                     else
                     {
                         lvl--;
-                        XY = new Coord(0, 0);
+                        XY = new Coord(1, 1);
                     }
                 }
 
@@ -99,6 +99,8 @@ namespace Hero
                     //push the rock
                     if (RN == Objet.R && map.IsEmpty(RockCoord)) { XY = NewXY; map.SetObjet(XY, Objet.V); map.SetObjet(RockCoord, Objet.R); }
                 }
+                
+                Console.WriteLine(Speed+""+map.GetObjet(XY));
                 map.ApplyPlayerEffect();
                 if (RN == Objet.T || RN == Objet.D || RN == Objet.P) { map.SetObjet(XY, Objet.V); }
             }
